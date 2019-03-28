@@ -68,7 +68,7 @@ class InfixWalker():
         return self.tokens[0]
 
     def advance(self):
-        tokens = self.tokens[self.position:self.position+2]
+        tokens = self.tokens[self.position:self.position + 2]
         self.position += 2
         return tokens
 
@@ -97,7 +97,7 @@ class InfixConf:
         return self.op_type == 'l'
 
 
-def infix(base, *,  e, l_paren=string('('), r_paren=string(')'), eat=regex('[\s]+').optional()):
+def infix(base, *, e, l_paren=string('('), r_paren=string(')'), eat=regex('[\s]+').optional()):
     """
     Example:
     >>> math = infix((tc.FLOAT | tc.INTEGER).NUMBER.child().flat(), e=[
@@ -132,6 +132,7 @@ def infix(base, *,  e, l_paren=string('('), r_paren=string(')'), eat=regex('[\s]
                     break
                 yield h(upper << eat)
             return h.results()
+
         return precedence
 
     @generate
@@ -178,6 +179,7 @@ def _make_token_mapper(name):
             return InfixOperationToken(name, result)
         else:
             return result
+
     return token_mapper
 
 

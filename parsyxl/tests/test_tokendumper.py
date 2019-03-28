@@ -1,5 +1,7 @@
 import unittest
+
 from parsyxl import *
+
 
 class TestTokenDumper(unittest.TestCase):
     def test_token_shows_strings_in_list(self):
@@ -18,4 +20,3 @@ class TestTokenDumper(unittest.TestCase):
 |   
 |   ]%
         """.strip(), dump.strip())
-    

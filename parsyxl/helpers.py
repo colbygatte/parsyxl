@@ -1,4 +1,3 @@
-import json
 from parsy import generate, success
 
 from parsyxl.tokens import Token
@@ -47,7 +46,7 @@ class ResultsBuilder:
         elif len(args) > 1:
             self.name = args[0]
             self.items = list(args[1])
-    
+
     def meta(self, **meta):
         self._meta = meta
 
@@ -142,6 +141,7 @@ class ResultHelper:
             elif default_tok:
                 self._results.append(Token(default_tok))
             return result
+
         return parser.optional().map(callback)
 
     def is_single(self):
@@ -154,6 +154,7 @@ class ResultHelper:
         def callback(result):
             self._results.append(result)
             return result
+
         return parser.map(callback)
 
     def __setitem__(self, key, value):
@@ -171,4 +172,5 @@ def generate_with_helper(func):
     def callback():
         h = ResultHelper()
         return func(h)
+
     return generate(callback)

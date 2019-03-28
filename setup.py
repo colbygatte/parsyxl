@@ -8,4 +8,8 @@ setup(name='parsyxl',
       author_email='colbygatte@gmail.com',
       license='MIT',
       packages=['parsyxl'],
-      zip_safe=False)
+      zip_safe=False,
+      install_requires=[
+            'parsy',
+            'attr'
+      ])

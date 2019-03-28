@@ -1,7 +1,9 @@
-from parsy import string, generate
-from parsyxl.tokendumper import *
 from functools import wraps
-    
+
+from parsy import generate
+
+from parsyxl.tokendumper import *
+
 
 def tok(thing):
     return wraps(thing)(generate(thing).tok(thing.__name__))
@@ -40,7 +42,7 @@ class Token:
             raise AttributeError
         else:
             return self.kwargs[name]
-    
+
     def __eq__(self, other):
         return self.value == other
 
@@ -67,14 +69,14 @@ class CustomToken(Token):
                 arg = kwargs.get(named)
                 parsed_args.append(arg)
         super().__init__(tname, parsed_args)
-    
+
     def freeze(self):
         self.__dict__['_frozen'] = True
-    
+
     def set(self, name, value):
         index = self._args.index(name)
         self.value[index] = value
-    
+
     def __getattr__(self, name):
         if name in self._args:
             return self.value[self._args.index(name)]

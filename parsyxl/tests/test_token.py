@@ -1,6 +1,6 @@
 import unittest
+
 import parsyxl.tokens
-import functools
 
 
 class TestNameToken(parsyxl.tokens.CustomToken):
@@ -25,10 +25,8 @@ class TestToken(unittest.TestCase):
 
         self.assertEqual('J', t.first)
         self.assertEqual('D', t.last)
-    
+
     def test_renaming(self):
         t = TestNameToken(first='J', last='D', tname='FOO')
 
         self.assertEqual(t.name, 'FOO')
-        
-    

@@ -1,4 +1,5 @@
-import parsyxl.tokens 
+import parsyxl.tokens
+
 
 class TokenDepth:
     def __init__(self, bar, pre):
@@ -6,23 +7,23 @@ class TokenDepth:
         self._pre = pre
         self.depth = 0
         self.string = ''
-    
+
     def inc(self):
         self.depth += 1
         return self
-    
+
     def dec(self):
         self.depth -= 1
         return self
-    
+
     def nl(self):
         self.string += '\n'
         return self
-    
+
     def bar(self):
-        self.string += self._bar*self.depth+self._pre
+        self.string += self._bar * self.depth + self._pre
         return self
-    
+
     def add(self, value):
         self.string += value
         return self
@@ -31,7 +32,7 @@ class TokenDepth:
 class TokenDumper:
     def __init__(self, bar='|   ', pre='|   '):
         self.depth = TokenDepth(bar, pre)
-    
+
     def dump(self, token, verbose='vv'):
         self.depth.depth = -1
         self.depth.string = ''
@@ -68,7 +69,7 @@ class TokenDumper:
             string_ = str(token)
             d.add(string_ if string_ != '' else "Empty('')")
             d.nl()
-        
+
         d.dec()
 
     def _vv(self, token, list_item=None):
@@ -122,5 +123,5 @@ class TokenDumper:
             string_ = string_.replace('\n', r'\n').replace('\t', r'\t')
             d.add('"%s"' % string_ if string_ != '' else "Empty('')")
             d.nl()
-        
+
         d.dec()

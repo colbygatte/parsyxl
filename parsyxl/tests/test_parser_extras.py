@@ -1,5 +1,7 @@
 import unittest
+
 from parsyxl import regex, string
+
 
 class TestParserExtras(unittest.TestCase):
     def test_child(self):
@@ -15,7 +17,7 @@ class TestParserExtras(unittest.TestCase):
             wordnum.parse('foo').name,
             'WORD'
         )
-    
+
     def test_child_with_many(self):
         """
         Tests that the parser returns the first child token.
@@ -23,7 +25,8 @@ class TestParserExtras(unittest.TestCase):
         WORD = regex('[a-zA-Z]+').WORD
         NUM = regex('[0-9]+').NUM
 
-        wordnum = (WORD | NUM).WORDNUM.child().many().tok() # Note: many() returns a list, calling tok() wraps it in a Token.
+        wordnum = (
+                    WORD | NUM).WORDNUM.child().many().tok()  # Note: many() returns a list, calling tok() wraps it in a Token.
 
         result = wordnum.parse('123abc456')
 

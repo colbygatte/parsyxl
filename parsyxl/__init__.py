@@ -1,8 +1,8 @@
 from parsy import *
 
+import parsyxl.helpers
 from parsyxl.infix import *
 from parsyxl.tokens import *
-import parsyxl.helpers
 
 
 class ParserExtras:
@@ -25,6 +25,7 @@ class ParserExtras:
     def concat(self):
         def joiner(items):
             return ''.join(str(i) for i in items)
+
         return self.map(joiner)
 
     def flat(self):
@@ -36,6 +37,7 @@ class ParserExtras:
                 return result
             else:
                 return result
+
         return flat_parser
 
     def child(self):
@@ -46,6 +48,7 @@ class ParserExtras:
                 return Result.success(result.index, result.value.value)
             else:
                 return result
+
         return flat_parser
 
     def dd(self, string, d=None):
@@ -63,7 +66,7 @@ def quoted(l='"', r='"', escape='\\'):
     >>> quoted('<<', '>>').parse('<<Hi \>> there>>')
     Hi >> there
     """
-    escape_parser =  string(escape) >> string(r)
+    escape_parser = string(escape) >> string(r)
 
     @generate
     def quoted_fn():
@@ -72,7 +75,7 @@ def quoted(l='"', r='"', escape='\\'):
         found = ''
         while True:
             found_escape_char = yield until_string([r, escape]).optional()
-            
+
             if found_escape_char:
                 found += found_escape_char
                 found_escape_sequence = yield escape_parser.many().concat().optional()
@@ -85,6 +88,7 @@ def quoted(l='"', r='"', escape='\\'):
         found += yield until_string(r)
         yield string(r)
         return found
+
     return quoted_fn
 
 
@@ -110,11 +114,12 @@ def delimited(expression, l='(', r=')', sep=','):
                     break
             else:
                 break
-            
+
         yield white >> string(r)
         return found
+
     return csv_fn
-    
+
 
 Parser.tok = ParserExtras.tok
 Parser.child = ParserExtras.child
@@ -136,12 +141,11 @@ def not_char(char):
             ))
         else:
             return Result.success(index + 1, stream[index])
-    
+
     return not_char_parser
 
 
 def not_string(test):
-
     @Parser
     def not_str_parser(stream, index):
         if len(test) >= len(stream) - index:
@@ -150,7 +154,7 @@ def not_string(test):
                 return Result.success(index + len(test), from_stream)
             else:
                 return Result.failure(index, 'not %s' % test)
-    
+
     return not_str_parser
 
 
@@ -158,10 +162,9 @@ def until_string(test, *, consume=False):
     """
     Match up to a string.
     """
-    
+
     if type(test) is not list:
         test = list([test])
-
 
     @Parser
     def until_string_parser(stream, index):
@@ -177,7 +180,5 @@ def until_string(test, *, consume=False):
             found += char
 
         return Result.failure(index, 'never found %s' % ','.join(test))
-    
+
     return until_string_parser
-
-
