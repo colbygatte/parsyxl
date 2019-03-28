@@ -7,7 +7,7 @@ class TestTokenDumper(unittest.TestCase):
     def test_token_shows_strings_in_list(self):
         dumper = TokenDumper()
 
-        parser = seq(string('{"').tok('lbrace'), string('#'))
+        parser = seq(string('{"').map(tok('lbrace')), string('#'))
 
         token = parser.parse('{"#')
 

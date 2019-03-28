@@ -4,59 +4,50 @@ import parsyxl.helpers
 from parsyxl.infix import *
 from parsyxl.tokens import *
 
+"""
+Mappers
+"""
 
-class ParserExtras:
-    def tok(self, name=None):
-        @Parser
-        def tok_parser(stream, index, **kwargs):
-            result = self(stream, index)
-            if result.status:
-                return Result.success(result.index, Token(name, result.value, **kwargs))
-            else:
-                return result
+class Mapper:
 
-        return tok_parser
 
-    def __getattr__(self, name):
-        if name == name.upper():
-            return self.tok(name)
-        raise AttributeError
 
-    def concat(self):
-        def joiner(items):
-            return ''.join(str(i) for i in items)
+def tok(name=None):
+    def tok_map(result):
+        return Token(name, result)
 
-        return self.map(joiner)
+    return tok_map
 
-    def flat(self):
-        @Parser
-        def flat_parser(stream, index, **kwargs):
-            result = self(stream, index)
-            if result.status:
-                result.value.value = str(result.value)
-                return result
-            else:
-                return result
 
-        return flat_parser
+def child(result):
+    return result.value
 
-    def child(self):
-        @Parser
-        def flat_parser(stream, index, **kwargs):
-            result = self(stream, index)
-            if result.status:
-                return Result.success(result.index, result.value.value)
-            else:
-                return result
 
-        return flat_parser
+def flatten(result):
+    result.value = str(result.value)
+    return result
 
-    def dd(self, string, d=None):
-        if not d:
-            d = TokenDumper()
-        dump = d.dump(self.parse(string))
-        print(dump)
-        exit()
+
+def joiner(items):
+    return ''.join(str(i) for i in items)
+
+
+"""
+Other
+"""
+
+
+def dd(parser, string, d=None):
+    if not d:
+        d = TokenDumper()
+    dump = d.dump(parser.parse(string))
+    print(dump)
+    exit()
+
+
+"""
+Parsers
+"""
 
 
 def quoted(l='"', r='"', escape='\\'):
@@ -119,14 +110,6 @@ def delimited(expression, l='(', r=')', sep=','):
         return found
 
     return csv_fn
-
-
-Parser.tok = ParserExtras.tok
-Parser.child = ParserExtras.child
-Parser.concat = ParserExtras.concat
-Parser.flat = ParserExtras.flat
-Parser.dd = ParserExtras.dd
-Parser.__getattr__ = ParserExtras.__getattr__
 
 
 def not_char(char):

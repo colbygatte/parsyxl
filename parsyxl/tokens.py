@@ -2,11 +2,12 @@ from functools import wraps
 
 from parsy import generate
 
+import parsyxl
 from parsyxl.tokendumper import *
 
 
-def tok(thing):
-    return wraps(thing)(generate(thing).tok(thing.__name__))
+def generate_tok(thing):
+    return wraps(thing)(generate(thing).map(parsyxl.map(parsyxl.tok(thing.__name__))))
 
 
 class Token:

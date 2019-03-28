@@ -5,21 +5,21 @@ from parsyxl import *
 
 class TestTokTest(unittest.TestCase):
     def test_token(self):
-        parser = string('{').tok('brace')
+        parser = string('{').map(tok('brace'))
         token = parser.parse('{')
 
         self.assertIsInstance(token, Token)
         self.assertEqual(token.name, 'brace')
 
     def test_shorthand_token_syntax(self):
-        parser = string('{').BRACE
+        parser = string('{').map(tok('BRACE'))
         token = parser.parse('{')
 
         self.assertIsInstance(token, Token)
         self.assertEqual(token.name, 'BRACE')
 
     def test_multi_token(self):
-        parser = string('{').tok('lbrace') + string('}').tok('rbrace')
+        parser = string('{').map(tok('lbrace')) + string('}').map(tok('rbrace'))
         token = parser.parse('{}')
 
         self.assertIsInstance(token, Token)
@@ -38,14 +38,14 @@ class TestTokTest(unittest.TestCase):
         self.assertTrue(id1 == id2)
 
     def test_can_concat_tokens(self):
-        parser = string('{').BRACE.many().concat().BRACES
+        parser = string('{').map(tok('BRACE')).many().map(joiner).map(tok('BRACES'))
         token = parser.parse('{{{')
 
         self.assertIsInstance(token, Token)
         self.assertEqual('BRACES', token.name)
 
     def test_tok_decorator(self):
-        @tok
+        @generate_tok
         def parser_one():
             x = yield string('x')
             return x

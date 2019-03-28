@@ -1,6 +1,7 @@
 import attr
 from parsy import string, regex, generate
 
+from parsyxl import tok
 from parsyxl.helpers import generate_with_helper, ResultHelper
 from parsyxl.tokens import Token, SurroundedByToken
 
@@ -139,16 +140,16 @@ def infix(base, *, e, l_paren=string('('), r_paren=string(')'), eat=regex('[\s]+
     def base_expr():
         left_helper = ResultHelper()
         for left_item in left_e:
-            result = yield left_helper.optional(
-                left_item.parser.tok(left_item.name)
+            yield left_helper.optional(
+                left_item.parser.map(tok(left_item.name))
             )
 
         base_result = yield base
 
         right_helper = ResultHelper()
         for right_item in right_e:
-            result = yield right_helper.optional(
-                right_item.parser.tok(right_item.name)
+            yield right_helper.optional(
+                right_item.parser.map(tok(right_item.name))
             )
 
         return InfixBaseToken(
