@@ -7,7 +7,7 @@ from parsyxl.tokendumper import *
 
 
 def generate_tok(thing):
-    return wraps(thing)(generate(thing).map(parsyxl.map(parsyxl.tok(thing.__name__))))
+    return wraps(thing)(generate(thing).map(parsyxl.tok(thing.__name__)))
 
 
 class Token:

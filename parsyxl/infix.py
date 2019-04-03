@@ -1,7 +1,6 @@
 import attr
 from parsy import string, regex, generate
 
-from parsyxl import tok
 from parsyxl.helpers import generate_with_helper, ResultHelper
 from parsyxl.tokens import Token, SurroundedByToken
 
@@ -53,7 +52,7 @@ class InfixBaseToken(SurroundedByToken):
         return self
 
 
-class InfixWalker():
+class InfixWalker:
     def __init__(self, tokens):
         self.tokens = tokens
         self.position = 0
@@ -101,11 +100,12 @@ class InfixConf:
 def infix(base, *, e, l_paren=string('('), r_paren=string(')'), eat=regex('[\s]+').optional()):
     """
     Example:
-    >>> math = infix((tc.FLOAT | tc.INTEGER).NUMBER.child().flat(), e=[
-    >>>    InfixConf(t.ADD | t.SUB, op_type='l'),
-    >>>    InfixConf(tc.PIPE, op_type='r'),
-    >>>    InfixConf(t.POW | t.MUL | t.DIV, 'MULTIPLICATIVE'),
-    >>>    InfixConf(t.ADD | t.SUB, 'ADDITIVE')
+    >>> math = infix(regex('[0-9]+'), e=[
+    >>>    # Left hand unary operands
+    >>>    InfixConf(string('+') | string('-'), op_type='l'),
+    >>>    # Binary operands
+    >>>    InfixConf(string('**') | string('*') | string('/'), 'MULTIPLICATIVE'),
+    >>>    InfixConf(string('+') | string('-'), 'ADDITIVE')
     >>> ])
     >>> math.dd('-1+2**(3/5)')
     """
@@ -141,7 +141,7 @@ def infix(base, *, e, l_paren=string('('), r_paren=string(')'), eat=regex('[\s]+
         left_helper = ResultHelper()
         for left_item in left_e:
             yield left_helper.optional(
-                left_item.parser.map(tok(left_item.name))
+                left_item.parser.map(lambda x: Token(left_item.name, x))
             )
 
         base_result = yield base
@@ -149,7 +149,7 @@ def infix(base, *, e, l_paren=string('('), r_paren=string(')'), eat=regex('[\s]+
         right_helper = ResultHelper()
         for right_item in right_e:
             yield right_helper.optional(
-                right_item.parser.map(tok(right_item.name))
+                right_item.parser.map(lambda x: Token(left_item.name, x))
             )
 
         return InfixBaseToken(

@@ -8,8 +8,9 @@ from parsyxl.tokens import *
 Mappers
 """
 
-class Mapper:
 
+class Mapper:
+    pass
 
 
 def tok(name=None):
@@ -24,8 +25,9 @@ def child(result):
 
 
 def flatten(result):
-    result.value = str(result.value)
-    return result
+    if isinstance(result, list):
+        return joiner([flatten(i) for i in result])
+    return str(result)
 
 
 def joiner(items):
